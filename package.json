@@ -1,0 +1,33 @@
+{
+  "name": "malas",
+  "version": "1.1.1",
+  "description": "AI-powered CLI assistant that runs commands and writes files based on user prompts.",
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "dist/index.js",
+  "bin": {
+    "malas": "./dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "tsx src/index.ts",
+    "build": "tsup src/index.ts --format cjs --minify",
+    "test": "vitest",
+    "prepublishOnly": "pnpm run build"
+  },
+  "author": "Luki",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^22.7.4",
+    "@types/readline-sync": "^1.4.8",
+    "tsup": "^6.0.0",
+    "typescript": "^5.0.0",
+    "vitest": "^0.32.0"
+  },
+  "dependencies": {
+    "readline-sync": "^1.4.10"
+  }
+}
