@@ -1,6 +1,6 @@
 {
   "name": "malas",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "AI-powered CLI assistant that runs commands and writes files based on user prompts.",
   "publishConfig": {
     "access": "public"
@@ -10,7 +10,8 @@
     "malas": "./dist/index.js"
   },
   "files": [
-    "dist"
+    "dist",
+    "src"
   ],
   "scripts": {
     "dev": "tsx src/index.ts",
