@@ -3,7 +3,8 @@ import path from "path";
 import log from "./logger";
 import readline from "readline-sync";
 import { writeFile } from "./fileWriter";
-interface Config {
+
+export interface Config {
   apiKey: string;
 }
 
@@ -19,12 +20,12 @@ export const getConfig = async (): Promise<Config> => {
       "red",
     );
     const apiKey = readline.question(
-      " Beri gw GroqAI ApiKey > apikey:",
+      " Beri gw Gemini Api Key yang lu punya\n > apikey:",
       {
         hideEchoBack: true,
       },
     );
-    await writeFile(configPath, JSON.stringify({ apiKey },null,3));
+    await writeFile(configPath, JSON.stringify({ apiKey }, null, 3));
     return { apiKey };
   } else {
     const configData = fs.readFileSync(configPath, "utf-8");
