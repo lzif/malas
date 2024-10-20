@@ -9,6 +9,9 @@
   "bin": {
     "malas": "./dist/index.js"
   },
+  "release": {
+    "branches": ["master"]
+  },
   "files": [
     "dist",
     "src"
