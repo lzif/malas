@@ -1,4 +1,10 @@
-import { Content, DynamicRetrievalMode, GenerateContentResult, GoogleGenerativeAI, Part } from "@google/generative-ai";
+import {
+  Content,
+  DynamicRetrievalMode,
+  GenerateContentResult,
+  GoogleGenerativeAI,
+  Part,
+} from "@google/generative-ai";
 import type { Config } from "../config";
 
 function getGenerativeModelConfig(instruction: string | Part | Content) {
@@ -23,10 +29,12 @@ export default async function generate(
   prompt: string,
   config: Config,
   history?: Content[],
-) :Promise<string>{
+): Promise<string> {
   try {
     const genAI = new GoogleGenerativeAI(config.apiKey);
-    const model = genAI.getGenerativeModel(getGenerativeModelConfig(instruction));
+    const model = genAI.getGenerativeModel(
+      getGenerativeModelConfig(instruction),
+    );
 
     const chatSession = model.startChat({
       generationConfig: config.generationConfig,
@@ -36,7 +44,6 @@ export default async function generate(
     const result = await chatSession.sendMessage(prompt);
     return result.response.text();
   } catch (_) {
-    throw new Error(" AI nya error jir, mungkin lagi malas mikir")
+    throw new Error(" AI nya error jir, mungkin lagi malas mikir");
   }
 }
-

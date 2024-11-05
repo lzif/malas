@@ -37,33 +37,33 @@ Lo bisa minta **"Malas"** untuk menjalankan command berikut ini:
 
 - **`bikin`**: Bikin kode atau komponen baru berdasarkan deskripsi yang diberikan. Misalnya:
 
-    ```bash
-    ❯ malas bikin "komponen svelte untuk login page dengan tailwind"
-    ```
+  ```bash
+  ❯ malas bikin "komponen svelte untuk login page dengan tailwind"
+  ```
 
 - **`rapiin`**: Refactor kode yang ada agar lebih bersih dan efisien. Contohnya:
 
-    ```bash
-    ❯ malas rapiin "./src/index.ts"
-    ```
+  ```bash
+  ❯ malas rapiin "./src/index.ts"
+  ```
 
 - **`jelasin`**: Berikan penjelasan singkat tentang kode atau fungsi tertentu. Misalnya:
 
-    ```bash
-    ❯ malas jelasin "fungsi untuk menghitung luas segitiga"
-    ```
+  ```bash
+  ❯ malas jelasin "fungsi untuk menghitung luas segitiga"
+  ```
 
 - **`test`**: Generate unit test untuk kode yang ada. Contohnya:
 
-    ```bash
-    ❯ malas test "./src/lib/module.js"
-    ```
+  ```bash
+  ❯ malas test "./src/lib/module.js"
+  ```
 
 - **`bikin-docs`**: Buat dokumentasi untuk fungsi atau modul yang dimaksud. Misalnya:
 
-    ```bash
-    ❯ malas bikin-docs "fungsi menghitung fibonacci"
-    ```
+  ```bash
+  ❯ malas bikin-docs "fungsi menghitung fibonacci"
+  ```
 
 Setiap command di atas akan memicu **"Malas"** untuk memikirkan dan menghasilkan output yang sesuai dengan permintaan kamu.
 
