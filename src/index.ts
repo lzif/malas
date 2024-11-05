@@ -1,56 +1,67 @@
-#!/usr/bin/env node
+// main.ts
+import { Command } from "commander";
+import { exit } from "process";
+import { getConfig } from "./config";
+import bikin from "./commands/bikin";
+//import rapiin from "./commands/rapiin";
+//import jelasin from "./commands/jelasin";
+//import test from "./commands/test";
+//import bikinDocs from "./commands/bikin-docs";
+const program = new Command();
 
-import readline from "readline-sync";
-import generate from "./ai";
-import log from "./logger";
-import { writeFile } from "./fileWriter";
-import { getConfig } from "./ConfigManager";
-import { ParseResult } from "./aiResultParser";
+// Define valid commands and descriptions
+const validCommands = [
+  { name: "bikin", description: "Membuat komponen atau kode baru sesuai deskripsi" },
+  { name: "rapiin", description: "Membersihkan dan merapikan kode yang ada" },
+  { name: "jelasin", description: "Memberikan penjelasan singkat mengenai kode atau fungsi" },
+  { name: "test", description: "Membuat unit test untuk kode atau fungsi tertentu" },
+  { name: "bikin-docs", description: "Membuat dokumentasi untuk fungsi atau modul yang disebutkan" },
+];
 
-const main = async () => {
-  log(" Halo orang malas!?");
-  const config = await getConfig();
-  const aiPrompt = readline.question(" Mau ngapain? ");
-  log(" Bentar mikir dulu ...");
-  let result: ParseResult[] = [];
-  try {
-    result = await generate(aiPrompt, config);
-  } catch (err) {
-    console.log(err);
-    log(" Gw juga malas", "red");
+async function executeCommand(command: string, prompt: string, config: any) {
+  switch (command) {
+    case "bikin":
+      await bikin(prompt, config);
+      break;
+    //case "rapiin":
+    //  await rapiin(prompt, config);
+    //  break;
+    //case "jelasin":
+    //  await jelasin(prompt, config);
+    //  break;
+    //case "test":
+    //  await test(prompt, config);
+    //  break;
+    //case "bikin-docs":
+    //  await bikinDocs(prompt, config);
+    //  break;
+    default:
+      console.error(`Command tidak valid: ${command}`);
+      exit(1);
   }
-  if (result.length == 0) {
-    log(" Aduh gw juga malas ...", "red");
-    return;
-  }
-  let num = 1;
-  for (const item of result) {
-    log(`\n Step ${num}. ════════════`, "cyan");
-    num++;
-    if (item.filename) {
-      if (item.code && item.filename) {
-        log(` ┌─── Bikin file : ${item.filename} ───`, "green");
-        log(
-          " \x1b[32m│\x1b[0m " +
-          item.code.replace(/\n/g, "\n \x1b[32m│\x1b[0m "),
-        );
-        log(" └─── end ───", "green");
+}
 
-        if (readline.keyInYN(" Lu yakin mau nyimpen file ini?")) {
-          await writeFile(item.filename, item.code);
-        }
-      }
-      //} else if (item.type === "command") {
-      //  if (item.command) {
-      //    log(" Run command:\n  $ " + item.command, "blue");
-      //    if (item.description) log(" Deskripsi: " + item.description, "cyan");
-      //
-      //    if (readline.keyInYN(" Lu yakin mau run command ini? [Yakin/nope]>")) {
-      //      await runCommand(item.command);
-      //    }
-      //  }
-    }
-    log("══════════════════", "cyan");
+// Register valid commands in commander
+async function main() {
+  const config = await getConfig()
+  validCommands.forEach(({ name, description }) => {
+    program
+      .command(name)
+      .description(description)
+      .argument("<prompt>", "Deskripsi atau prompt yang diperlukan")
+      .action((prompt) => {
+        executeCommand(name, prompt, config);
+      });
+  });
+
+  // Display help message if no command is provided
+  program.showHelpAfterError("Format command salah. Gunakan 'malas <command> <prompt>' untuk menjalankan.");
+
+  program.parse(process.argv);
+
+  if (!process.argv.slice(2).length) {
+    program.outputHelp();
+    exit(0);
   }
-};
-main();
+}
+main()
