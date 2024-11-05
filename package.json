@@ -54,7 +54,7 @@
   "scripts": {
     "dev": "tsx src/index.ts",
     "build": "tsup src/index.ts --format cjs --minify",
-    "test": "vitest",
+    "test": "vitest run",
     "prepublishOnly": "pnpm run build"
   },
   "author": "lzif",
