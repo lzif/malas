@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/lzif/malas/compare/v1.1.0...v1.2.0) (2024-11-05)
+
+
+### Features
+
+* **commands/bikin:** add confirmation prompt before saving file ([fa1f15d](https://github.com/lzif/malas/commit/fa1f15d826414aaba66f1fe019905650fabb3caf))
+
 # [1.1.0](https://github.com/lzif/malas/compare/v1.0.0...v1.1.0) (2024-11-05)
 
 
