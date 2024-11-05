@@ -1,3 +1,13 @@
+# [1.1.0](https://github.com/lzif/malas/compare/v1.0.0...v1.1.0) (2024-11-05)
+
+
+### Features
+
+* **commands:** add new commands for bikin, bikin-docs, jelasin, rapiin, and test ([6b114cf](https://github.com/lzif/malas/commit/6b114cfcf6afe444f70e9b274d545999d4d0966f))
+* **package.json:** add vitest configuration and update test script to run vitest ([736b811](https://github.com/lzif/malas/commit/736b811cc2adea6613fb08ec8de6610c1633094c))
+* **services:** add AI, file, and logger services ([afbf1bd](https://github.com/lzif/malas/commit/afbf1bd3937868ea9127caba24fa7b7ea148ea9f))
+* **types.ts:** add UserPrompt interface and Command type ([1f35e33](https://github.com/lzif/malas/commit/1f35e334ccef286c8e931e649387c955c6a44bc7))
+
 # 1.0.0 (2024-11-05)
 
 
