@@ -1,8 +1,8 @@
 import fs from "fs";
 import path from "path";
-import readline from "readline-sync";
 import { writeFile } from "./services/file";
 import log from "./services/logger";
+import { ask } from "./utils/readlineHelper";
 
 interface GenerationConfig {
   temperature: number;
@@ -28,11 +28,8 @@ export const getConfig = async (): Promise<Config> => {
       " Config filenya gk ada njirr. Gw bakal nyimpen confignya disini > ~/.malas-bikin-config.json",
       "red",
     );
-    const apiKey = readline.question(
+    const apiKey = await ask(
       " Beri gw Gemini Api Key yang lu punya\n > apikey:",
-      {
-        hideEchoBack: true,
-      },
     );
     const config: Config = {
       apiKey,
