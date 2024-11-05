@@ -3,6 +3,7 @@ import { Config } from "../config";
 import { writeFile } from "../services/file";
 import generate from "../services/ai";
 import log from "../services/logger";
+import { yOrN } from "../utils/readlineHelper";
 
 const INSTRUCTION: Part = {
   text: `Buat komponen atau kode sesuai deskripsi dari user. Output harus terstruktur dan menggunakan format di bawah ini:
@@ -46,9 +47,9 @@ const parseContent = (input: string) => {
   const filePath = filePathMatch ? filePathMatch[1].trim() : null;
   const component = componentMatch
     ? componentMatch[1]
-        .trim()
-        .replace(/\`\`\`(.+?)\n/, "")
-        .replace("```", "")
+      .trim()
+      .replace(/\`\`\`(.+?)\n/, "")
+      .replace("```", "")
     : null;
   const description = descriptionMatch ? descriptionMatch[1].trim() : null;
 
@@ -60,8 +61,15 @@ export default async function bikin(prompt: string, config: Config) {
   console.log(AIResult);
   const { filePath, component, description } = parseContent(AIResult);
   if (filePath && component) {
-    log(" Deskripsi: " + description);
-    await writeFile(filePath, component);
-    log(` File ${filePath} sudah berhasil disimpan`);
+    log(" File: " + filePath, "blue")
+    log(component)
+
+    if (description) {
+      log(" Deskripsi: " + description, "blue");
+    }
+    if (await yOrN(" Simpan file?")) {
+      await writeFile(filePath, component);
+      log(` File ${filePath} sudah berhasil disimpan`);
+    }
   }
 }

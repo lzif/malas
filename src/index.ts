@@ -2,6 +2,7 @@
 import { Command } from "commander";
 import { exit } from "process";
 import { getConfig } from "./config";
+import { version } from "../package.json";
 import bikin from "./commands/bikin";
 //import rapiin from "./commands/rapiin";
 //import jelasin from "./commands/jelasin";
@@ -55,6 +56,11 @@ async function executeCommand(command: string, prompt: string, config: any) {
 
 // Register valid commands in commander
 async function main() {
+  program
+    .name("malas")
+    .description("CLI untuk berbagai utilitas coding")
+    .version(version) // Versi dari package.json
+   
   const config = await getConfig();
   validCommands.forEach(({ name, description }) => {
     program
