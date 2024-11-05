@@ -1,6 +1,6 @@
 {
   "name": "malas",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "description": "AI-powered CLI assistant that runs commands and writes files based on user prompts.",
   "publishConfig": {
     "access": "public"
@@ -9,10 +9,40 @@
   "bin": {
     "malas": "./dist/index.js"
   },
+  "repositoryUrl": "https://github.com/lzif/malas.git",
   "release": {
-    "branches": [
-      "master"
+    {
+  "branches": ["master"],
+  "plugins": [
+    "@semantic-release/commit-analyzer",
+    "@semantic-release/release-notes-generator",
+    "@semantic-release/changelog",
+    [
+      "@semantic-release/npm",
+      {
+        "npmPublish": true
+      }
+    ],
+    [
+      "@semantic-release/github",
+      {
+        "assets": [
+          {
+            "path": "dist/**",
+            "label": "JavaScript distribution files"
+          }
+        ]
+      }
+    ],
+    [
+      "@semantic-release/git",
+      {
+        "assets": ["package.json", "CHANGELOG.md"],
+        "message": "chore(release): ${nextRelease.version} [skip ci]"
+      }
     ]
+  ]
+}
   },
   "files": [
     "dist",
@@ -24,7 +54,7 @@
     "test": "vitest",
     "prepublishOnly": "pnpm run build"
   },
-  "author": "Luki",
+  "author": "lzif",
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^22.7.4",
