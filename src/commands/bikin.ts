@@ -58,7 +58,7 @@ const parseContent = (input: string) => {
 
 export default async function bikin(prompt: string, config: Config) {
   const AIResult = await generate(INSTRUCTION, prompt, config, HISTORY);
-  console.log(AIResult);
+  //console.log(AIResult);
   const { filePath, component, description } = parseContent(AIResult);
   if (filePath && component) {
     log(" File: " + filePath, "blue")
