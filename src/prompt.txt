@@ -1,5 +1,0 @@
-Write svelte example with correct path+filename in above codeblock with this format
-filename: "src/example.py"
-```py
-print("hello")
-```
