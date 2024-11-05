@@ -8,8 +8,7 @@
 - **Multi-Language Support**: Support banyak bahasa pemrograman (Node.js, Python, Svelte, dll.).
 - **Konfigurasi Otomatis**: Kalau config-nya belum ada, Malas bakal bikin otomatis di `~/.malas-bikin-config.json`.
 - **Command dan File Dinamis**: Lo bisa request command, file, atau kode apa aja sesuai keinginan.
-- **Build Cepet**: Pakai `tsup` buat build cepet.
-- **Testing**: Udah include `Vitest` buat testing.
+- **Integrasi AI untuk Kode**: Dengan command seperti `bikin`, `rapiin`, `jelasin`, `test`, dan `bikin-docs`, lo bisa langsung mendapatkan kode, penjelasan, dan dokumentasi dari AI.
 
 ## Instalasi
 
@@ -21,49 +20,52 @@ npm install -g malas
 
 ### Setup Awal
 
-Pas pertama kali jalanin **Malas**, lo bakal diminta masukin **Groq API key** buat konfigurasi awal. Kalau file config belum ada, Malas bakal otomatis bikin.
+Pas pertama kali jalanin **Malas**, lo bakal diminta masukin **Gemini API key** buat konfigurasi awal. Kalau file config belum ada, Malas bakal otomatis bikin.
 
 ```bash
-❯ malas
+$ malas
 Halo orang malas!?
 Config filenya gk ada njirr. Gw bakal nyimpen confignya disini > ~/.malas-bikin-config.json
-Beri gw GroqAI ApiKey biar bisa bantu lu > apikey:********************************************************
+Beri gw Gemini API Key > apikey:********************************************************
 ```
 
 Setelah itu, **"Malas"** nyimpen config di path yang udah disebut.
 
-### Generate Kode atau Command
+### Command yang Tersedia
 
-Lo bisa minta **"Malas"** buat bikin kode atau jalanin command yang lo mau. Contoh:
+Lo bisa minta **"Malas"** untuk menjalankan command berikut ini:
 
-```bash
-❯ malas
-Mau ngapain? kode nodejs simple log
-Bentar mikir dulu ...
-```
+- **`bikin`**: Bikin kode atau komponen baru berdasarkan deskripsi yang diberikan. Misalnya:
 
-**"Malas"** bakal mikir dulu, terus generate file dan command yang sesuai:
+    ```bash
+    ❯ malas bikin "komponen svelte untuk login page dengan tailwind"
+    ```
 
-```bash
-1. ═══════════════
-┌─── Nama file : package.json ───                                      │
-│ {"name": "simplelog","version": "1.0.0","description": "",           │
-│ "main": "index.js","scripts": {"start": "node index.js"},            │
-│ "keywords": [],"author": "","license": "ISC"}                        │
-└─── akhir filenya ───
-Deskripsi: Isi package.json
-Lu yakin mau nyimpen file ini? [Yakin/nope]> [y/n]: n
-══════════════════
+- **`rapiin`**: Refactor kode yang ada agar lebih bersih dan efisien. Contohnya:
 
-2. ═══════════════
-Command:
- $ npm install winston
-Deskripsi: Install package winston
-Lu yakin mau run command ini? [Yakin/nope]> [y/n]: n
-══════════════════
-```
+    ```bash
+    ❯ malas rapiin "./src/index.ts"
+    ```
 
-Lo bisa konfirmasi apakah mau jalanin atau nggak dengan input `[y/n]`.
+- **`jelasin`**: Berikan penjelasan singkat tentang kode atau fungsi tertentu. Misalnya:
+
+    ```bash
+    ❯ malas jelasin "fungsi untuk menghitung luas segitiga"
+    ```
+
+- **`test`**: Generate unit test untuk kode yang ada. Contohnya:
+
+    ```bash
+    ❯ malas test "./src/lib/module.js"
+    ```
+
+- **`bikin-docs`**: Buat dokumentasi untuk fungsi atau modul yang dimaksud. Misalnya:
+
+    ```bash
+    ❯ malas bikin-docs "fungsi menghitung fibonacci"
+    ```
+
+Setiap command di atas akan memicu **"Malas"** untuk memikirkan dan menghasilkan output yang sesuai dengan permintaan kamu.
 
 ### Konfigurasi Global
 
@@ -73,7 +75,7 @@ Contoh config:
 
 ```json
 {
-  "apiKey": "apikey-lo-disini",
+  "apiKey": "apikey-lo-disini"
 }
 ```
 

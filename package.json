@@ -10,7 +10,9 @@
     "malas": "./dist/index.js"
   },
   "release": {
-    "branches": ["master"]
+    "branches": [
+      "master"
+    ]
   },
   "files": [
     "dist",
@@ -26,12 +28,12 @@
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^22.7.4",
-    "@types/readline-sync": "^1.4.8",
     "tsup": "^6.0.0",
     "typescript": "^5.0.0",
     "vitest": "^0.32.0"
   },
   "dependencies": {
-    "readline-sync": "^1.4.10"
+    "@google/generative-ai": "^0.21.0",
+    "commander": "^12.1.0"
   }
 }
