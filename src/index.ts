@@ -4,10 +4,10 @@ import { exit } from "process";
 import { getConfig } from "./config";
 import { version } from "../package.json";
 import bikin from "./commands/bikin";
-//import rapiin from "./commands/rapiin";
-//import jelasin from "./commands/jelasin";
-//import test from "./commands/test";
-//import bikinDocs from "./commands/bikin-docs";
+import rapiin from "./commands/rapiin";
+import jelasin from "./commands/jelasin";
+import test from "./commands/test";
+import bikinDocs from "./commands/bikin-docs";
 const program = new Command();
 
 // Define valid commands and descriptions
@@ -31,57 +31,57 @@ const validCommands = [
   },
 ];
 
-async function executeCommand(command: string, prompt: string, config: any) {
+async function executeCommand(command: string, prompt: string, config: any, filepath?: string | null) {
   switch (command) {
     case "bikin":
       await bikin(prompt, config);
       break;
-    //case "rapiin":
-    //  await rapiin(prompt, config);
-    //  break;
-    //case "jelasin":
-    //  await jelasin(prompt, config);
-    //  break;
-    //case "test":
-    //  await test(prompt, config);
-    //  break;
-    //case "bikin-docs":
-    //  await bikinDocs(prompt, config);
-    //  break;
+    case "rapiin":
+      await rapiin(prompt, config, filepath);
+      break;
+    case "jelasin":
+      await jelasin(prompt, config, filepath);
+      break;
+    case "test":
+      await test(prompt, config, filepath);
+      break;
+    case "bikin-docs":
+      await bikinDocs(prompt, config, filepath);
+      break;
     default:
       console.error(`Command tidak valid: ${command}`);
-      exit(1);
+      process.exit(1);
   }
 }
 
-// Register valid commands in commander
 async function main() {
   program
     .name("malas")
-    .description("CLI untuk berbagai utilitas coding")
-    .version(version) // Versi dari package.json
-   
+    .description("AI CLI untuk berbagai utilitas coding.")
+    .version(version); 
+
   const config = await getConfig();
   validCommands.forEach(({ name, description }) => {
     program
       .command(name)
       .description(description)
+      .argument("[filepath]", "File yang dibutuhkan untuk beberapa command")
       .argument("<prompt>", "Deskripsi atau prompt yang diperlukan")
-      .action((prompt) => {
-        executeCommand(name, prompt, config);
+      .action(async (filepath, prompt) => {
+        await executeCommand(name, prompt, config, filepath);
       });
   });
 
-  // Display help message if no command is provided
   program.showHelpAfterError(
-    "Format command salah. Gunakan 'malas <command> <prompt>' untuk menjalankan.",
+    "Format command salah. Gunakan 'malas <command> [filepath] <prompt>' untuk menjalankan."
   );
 
   program.parse(process.argv);
 
   if (!process.argv.slice(2).length) {
     program.outputHelp();
-    exit(0);
+    process.exit(0);
   }
 }
+
 main();
