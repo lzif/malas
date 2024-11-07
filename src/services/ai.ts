@@ -1,7 +1,6 @@
 import {
   Content,
   DynamicRetrievalMode,
-  GenerateContentResult,
   GoogleGenerativeAI,
   Part,
 } from "@google/generative-ai";
@@ -43,7 +42,12 @@ export default async function generate(
 
     const result = await chatSession.sendMessage(prompt);
     return result.response.text();
-  } catch (_) {
+  } catch (err) {
+    if (err instanceof Error){
+      console.error(err)
+      throw new Error(err.message)
+    } else {
     throw new Error(" AI nya error jir, mungkin lagi malas mikir");
+    }
   }
 }
