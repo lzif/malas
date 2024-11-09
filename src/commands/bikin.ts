@@ -31,17 +31,9 @@ const HISTORY = [
 ];
 
 export default async function bikin(prompt: string, config: Config) {
-  const spinner = ora({
-    text: "Bentar, mikir dulu...",
-    spinner: "bouncingBar",
-    color: "green",
-  }).start();
-
   try {
     const AIResult = await generate(INSTRUCTION, prompt, config, HISTORY);
     const { filepath, kode, keterangan } = parseText(AIResult);
-
-    spinner.succeed(" Berhasil membuat kode");
 
     if (filepath && kode) {
       logCode(kode, filepath);
@@ -55,9 +47,7 @@ export default async function bikin(prompt: string, config: Config) {
       }
     }
   } catch (error) {
-    spinner.fail(" Gagal membuat kode, maaf :(");
     if (error instanceof Error) {
-      spinner.stop().clear();
       log("Terjadi kesalahan: " + error.message, "red");
     }
   }

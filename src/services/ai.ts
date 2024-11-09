@@ -5,6 +5,7 @@ import {
   Part,
 } from "@google/generative-ai";
 import type { Config } from "../config";
+import ora from "ora";
 
 function getGenerativeModelConfig(instruction: string | Part | Content) {
   return {
@@ -19,6 +20,12 @@ export default async function generate(
   config: Config,
   history?: Content[],
 ): Promise<string> {
+  const spinner = ora({
+    text: "Bentar, mikir dulu...",
+    spinner: "bouncingBar",
+    color: "green",
+  }).start();
+
   try {
     const genAI = new GoogleGenerativeAI(config.apiKey);
     const model = genAI.getGenerativeModel(
@@ -31,13 +38,15 @@ export default async function generate(
     });
 
     const result = await chatSession.sendMessage(prompt);
+    spinner.succeed(" Berhasil membuat kode");
     return result.response.text();
   } catch (err) {
-    if (err instanceof Error){
-      console.error(err)
-      throw new Error("Error cik: \n"+err.message)
+    spinner.fail(" Gagal membuat kode, maaf :(");
+    if (err instanceof Error) {
+      console.error(err);
+      throw new Error("Error cik: \n" + err.message);
     } else {
-    throw new Error(" AI nya error jir, mungkin lagi malas mikir");
+      throw new Error(" AI nya error jir, mungkin lagi malas mikir");
     }
   }
 }
