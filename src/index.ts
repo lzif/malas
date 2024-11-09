@@ -39,6 +39,11 @@ async function executeCommand(
 }
 
 async function main() {
+  process.on('uncaughtException', (err) => {
+  console.error(`Error: ${err.message}`);
+  process.exit(1);
+});
+
   try {
     program
       .name("malas")
