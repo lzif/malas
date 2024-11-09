@@ -20,13 +20,13 @@ npm install -g malas
 
 ### Setup Awal
 
-Pas pertama kali jalanin **Malas**, lo bakal diminta masukin **Gemini API key** buat konfigurasi awal. Kalau file config belum ada, Malas bakal otomatis bikin.
+Pas pertama kali jalanin **Malas**, lo bakal diminta masukin [**Gemini API key**](https://aistudio.google.com/app/apikey) buat konfigurasi awal. Kalau file config belum ada, Malas bakal otomatis bikin.
 
 ```bash
 $ malas
-Halo orang malas!?
-Config filenya gk ada njirr. Gw bakal nyimpen confignya disini > ~/.malas-bikin-config.json
-Beri gw Gemini API Key > apikey:********************************************************
+# Halo orang malas!?
+# Config filenya gk ada njirr. Gw bakal nyimpen confignya disini > ~/.malas-bikin-config.json
+# Beri gw Gemini API Key > apikey:********************************************************
 ```
 
 Setelah itu, **"Malas"** nyimpen config di path yang udah disebut.
@@ -38,31 +38,31 @@ Lo bisa minta **"Malas"** untuk menjalankan command berikut ini:
 - **`bikin`**: Bikin kode atau komponen baru berdasarkan deskripsi yang diberikan. Misalnya:
 
   ```bash
-  ❯ malas bikin "komponen svelte untuk login page dengan tailwind"
+  malas bikin "komponen svelte untuk login page dengan tailwind"
   ```
 
 - **`rapiin`**: Refactor kode yang ada agar lebih bersih dan efisien. Contohnya:
 
   ```bash
-  ❯ malas rapiin "./src/index.ts"
+  malas rapiin "./src/index.ts"
   ```
 
 - **`jelasin`**: Berikan penjelasan singkat tentang kode atau fungsi tertentu. Misalnya:
 
   ```bash
-  ❯ malas jelasin "fungsi untuk menghitung luas segitiga"
+  malas jelasin "fungsi untuk menghitung luas segitiga"
   ```
 
 - **`test`**: Generate unit test untuk kode yang ada. Contohnya:
 
   ```bash
-  ❯ malas test "./src/lib/module.js"
+  malas test "./src/lib/module.js"
   ```
 
 - **`bikin-docs`**: Buat dokumentasi untuk fungsi atau modul yang dimaksud. Misalnya:
 
   ```bash
-  ❯ malas bikin-docs "fungsi menghitung fibonacci"
+  malas bikin-docs "fungsi menghitung fibonacci"
   ```
 
 Setiap command di atas akan memicu **"Malas"** untuk memikirkan dan menghasilkan output yang sesuai dengan permintaan kamu.
