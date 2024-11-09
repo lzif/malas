@@ -41,11 +41,11 @@ export const getConfig = async (): Promise<Config> => {
         responseMimeType: "text/plain",
       },
     };
-    await writeFile(configPath, JSON.stringify({ config }, null, 3));
+    await writeFile(configPath, JSON.stringify({ ...config }, null, 3));
     return config;
   } else {
     const configData = fs.readFileSync(configPath, "utf-8");
-    const result: { config: Config } = JSON.parse(configData);
-    return result.config;
+    const result:Config = JSON.parse(configData);
+    return result
   }
 };
