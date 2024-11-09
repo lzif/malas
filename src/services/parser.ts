@@ -6,7 +6,7 @@
   * @param input The text to parse
   * @returns A dictionary with the parsed keys and values
 */
-function parseText(input: string) {
+export function parseText(input: string) {
   const component: Record<string, string> = {};
   const regex = /\[([^\]]+)\]:\s*(.*?)(?=\n\[[^\]]+\]:|$)/gs;
 

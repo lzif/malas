@@ -9,10 +9,14 @@ const colors: { [key: string]: string } = {
   white: "\x1b[37m",
 };
 
+/**
+ * Logs a message to the console with an optional color.
+ */
 export default function log(
   message: string,
   color: keyof typeof colors = "reset",
 ): void {
+  let messages = " " + message.replace("\n","\n ")
   const colorCode = colors[color] || colors.reset;
-  console.log(`${colorCode}%s${colors.reset}`, message);
+  console.log(`${colorCode}%s${colors.reset}`, messages);
 }
