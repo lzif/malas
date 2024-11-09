@@ -10,16 +10,6 @@ function getGenerativeModelConfig(instruction: string | Part | Content) {
   return {
     model: "gemini-1.5-flash-8b",
     systemInstruction: instruction,
-    //tools: [
-    //  {
-    //    googleSearchRetrieval: {
-    //      dynamicRetrievalConfig: {
-    //        mode: DynamicRetrievalMode.MODE_DYNAMIC,
-    //        dynamicThreshold: 0.5,
-    //      },
-    //    },
-    //  },
-    //],
   };
 }
 
@@ -45,7 +35,7 @@ export default async function generate(
   } catch (err) {
     if (err instanceof Error){
       console.error(err)
-      throw new Error(err.message)
+      throw new Error("Error cik: \n"+err.message)
     } else {
     throw new Error(" AI nya error jir, mungkin lagi malas mikir");
     }

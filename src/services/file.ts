@@ -44,3 +44,15 @@ export const readFile = async (filename: string) => {
     return null;
   }
 };
+
+export const validateFilePath = async (filepath: string): Promise<string> => {
+  try {
+    const stats = await fs.stat(filepath);
+    if (!stats.isFile()) {
+      throw new Error('Path yang diberikan bukan file');
+    }
+    return path.resolve(filepath);
+  } catch (error) {
+    throw new Error(`File tidak ditemukan: ${filepath}`);
+  }
+};
