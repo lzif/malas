@@ -1,75 +1,60 @@
-import { Part } from "@google/generative-ai";
 import { Config } from "../config";
 import { writeFile } from "../services/file";
 import generate from "../services/ai";
-import log from "../services/logger";
+import log, { logCode } from "../services/logger";
 import { yOrN } from "../utils/readlineHelper";
+import { parseText } from "../services/parser";
+import ora from "ora";
+import chalk from "chalk";
 
-const INSTRUCTION: Part = {
-  text: `Buat komponen atau kode sesuai deskripsi dari user. Output harus terstruktur dan menggunakan format di bawah ini:
+const INSTRUCTION = `Buat kode,komponen atau fungsi sesuai prompt dari user. Gunakan format berikut:
 
-Format Output:
+[FILEPATH]: <path file, misal src/components/Login.svelte>
+[KODE]:
+<kode komponen atau fungsi di sini>
 
-     [FILEPATH]
-     <path file tempat komponen atau kode ini disimpan, contoh: ./src/components/Login.svelte>
-
-     [KOMPONEN]
-     <kode komponen atau fungsi di sini, usahakan simple dan pakai prinsip DRY,KISS>
-
-     [KETERANGAN]
-     <penjelasan singkat dan ringkas tentang komponen dan bagaimana cara menggunakannya>
-
-Pastikan format ini diikuti secara konsisten dan tanpa penjelasan tambahan, hanya penjelasan inti dibawah [KETERANGAN]`,
-};
+[KETERANGAN]: <deskripsi singkat dan ringkas tentang komponen/fungsi, kalau bisa 1 paragraf>`
 
 const HISTORY = [
   {
     role: "user",
-    parts: [{ text: "fungsi untuk cek ganjil atau genap dengan typescript" }],
+    parts: [
+      { text: "Login page svelte&tailwind tanpa logic" },
+    ],
   },
   {
     role: "model",
     parts: [
-      {
-        text: '[FILEPATH]\n./src/utils/isEvenOdd.ts\n\n[KOMPONEN]\nfunction isEvenOdd(num: number): string {\n  if (num % 2 === 0) {\n    return "Genap";\n  } else {\n    return "Ganjil";\n  }\n}\n\nexport default isEvenOdd;\n\n[KETERANGAN]\nFungsi `isEvenOdd` menerima satu argumen berupa angka (`num`). Fungsi ini akan mengembalikan string "Genap" jika angka tersebut genap, dan "Ganjil" jika angka tersebut ganjil.',
-      },
+      { text: "[FILEPATH]: src/components/LoginPage.svelte\n[KODE]: \n<script>\n\timport { onMount } from 'svelte';\n</script>\n\n<div class=\"container mx-auto p-8\">\n\t<h1 class=\"text-3xl font-bold mb-4\">Login</h1>\n\t<form>\n\t\t<div class=\"mb-4\">\n\t\t\t<label class=\"block text-gray-700 text-sm font-bold mb-2\" for=\"email\">Email</label>\n\t\t\t<input type=\"email\" id=\"email\" class=\"shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline\" />\n\t\t</div>\n\t\t<div class=\"mb-4\">\n\t\t\t<label class=\"block text-gray-700 text-sm font-bold mb-2\" for=\"password\">Password</label>\n\t\t\t<input type=\"password\" id=\"password\" class=\"shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline\" />\n\t\t</div>\n\t\t<button type=\"submit\" class=\"bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded\">Login</button>\n\t</form>\n</div>\n\n<style>\n\t.container {\n\t\twidth: 300px;\n\t}\n</style>\n\n[KETERANGAN]:  Komponen halaman login sederhana dengan Svelte dan Tailwind CSS.  Menggunakan form untuk menerima input email dan password.  Tidak termasuk logika validasi atau pemrosesan server-side.  Hanya tampilan.  Menggunakan Tailwind CSS untuk styling.  Menggunakan Svelte untuk membuat komponen.  Belum ada penanganan submit form.  Hanya tampilan form.  Contoh styling yang mudah.\n" },
     ],
   },
-];
-
-const parseContent = (input: string) => {
-  const filePathMatch = input.match(/\[FILEPATH\]\n(.+?)\n\n/);
-  const componentMatch = input.match(
-    /\[KOMPONEN\]\n([\s\S]*?)\n\n\[KETERANGAN\]/,
-  );
-  const descriptionMatch = input.match(/\[KETERANGAN\]\n([\s\S]*)/);
-
-  const filePath = filePathMatch ? filePathMatch[1].trim() : null;
-  const component = componentMatch
-    ? componentMatch[1]
-      .trim()
-      .replace(/\`\`\`(.+?)\n/, "")
-      .replace("```", "")
-    : null;
-  const description = descriptionMatch ? descriptionMatch[1].trim() : null;
-
-  return { filePath, component, description };
-};
+]
 
 export default async function bikin(prompt: string, config: Config) {
-  const AIResult = await generate(INSTRUCTION, prompt, config, HISTORY);
-  //console.log(AIResult);
-  const { filePath, component, description } = parseContent(AIResult);
-  if (filePath && component) {
-    log(" File: " + filePath, "blue")
-    log(component)
+  const spinner = ora({ text: "Bentar, mikir dulu...", spinner: "bouncingBar", color: "green" }).start();
 
-    if (description) {
-      log(" Deskripsi: " + description, "blue");
+  try {
+    const AIResult = await generate(INSTRUCTION, prompt, config, HISTORY);
+    const { filepath, kode, keterangan } = parseText(AIResult);
+
+    spinner.succeed(" Berhasil membuat kode")
+
+    if (filepath && kode) {
+      logCode(kode, filepath)
+
+      if (keterangan) {
+        log(chalk.blue("Deskripsi: ") + keterangan);
+      }
+
+      if (await yOrN(chalk.blue(" Simpan file?"))) {
+        await writeFile(filepath, kode);
+      }
     }
-    if (await yOrN(" Simpan file?")) {
-      await writeFile(filePath, component);
-      log(` File ${filePath} sudah berhasil disimpan`);
+  } catch (error) {
+    spinner.fail(" Gagal membuat kode, maaf :(")
+    if (error instanceof Error) {
+      spinner.stop().clear();
+      log("Terjadi kesalahan: " + error.message, "red");
     }
   }
 }
