@@ -43,7 +43,7 @@ export default async function bikin(prompt: string, config: Config) {
       }
 
       if (await yOrN(chalk.blue(" Simpan file?"))) {
-        await writeFile(filepath, kode);
+        await writeFile(filepath, kode.replace(/```(.*?)\n/g, "").replace(/```/g, "")); //patch
       }
     }
   } catch (error) {
