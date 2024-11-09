@@ -1,3 +1,22 @@
+# [1.3.0](https://github.com/lzif/malas/compare/v1.2.0...v1.3.0) (2024-11-09)
+
+
+### Bug Fixes
+
+* **config.ts:** remove unnecessary object destructuring in config file ([397eba8](https://github.com/lzif/malas/commit/397eba876da671cd570854c6520625638e0bb2a3))
+* **services/ai.ts:** handle errors from Google Generative AI API ([a4a8973](https://github.com/lzif/malas/commit/a4a89732443192aab5168cc5e0c5f65698950d40))
+* **services/ai.ts:** improve error handling for AI generation ([fc5b4f3](https://github.com/lzif/malas/commit/fc5b4f30d1985e9c62f2bc04f3e69dd12af9b649))
+
+
+### Features
+
+* **commands/jelasin.ts:** add jelasin command ([e62c371](https://github.com/lzif/malas/commit/e62c3714dd024c7af8b8ff20016f1352cec3eada))
+* **index.ts:** add support for filepath argument to commands ([ef4b285](https://github.com/lzif/malas/commit/ef4b285e6f6c191c531c5d39fc4ab2af032b266a))
+* **package.json:** update build script to output both cjs and esm formats ([2f9d76e](https://github.com/lzif/malas/commit/2f9d76e30825566c762f162d295a6a108ee5dccc))
+* **services/logger.ts:** add documentation to log function ([8361781](https://github.com/lzif/malas/commit/836178118b3b3d6c9b25d13e5872919abfcad8ad))
+* **services/logger.ts:** add logCode function to display code snippets in the console ([a3b4193](https://github.com/lzif/malas/commit/a3b41935edec833081e91dc4456ad3b29c4df2bd))
+* **services:** add parser service to parse text with markdown-style key-value pairs ([83e9a30](https://github.com/lzif/malas/commit/83e9a30255ba8a4399024282b3bf47b54c58746c))
+
 # [1.2.0](https://github.com/lzif/malas/compare/v1.1.0...v1.2.0) (2024-11-05)
 
 
