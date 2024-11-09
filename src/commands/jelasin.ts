@@ -1,5 +1,7 @@
 import { Config } from "../config";
 
-export default function jelasin(prompt:string,config:Config){
-  
-}
+export default async function jelasin(
+  prompt: string,
+  config: Config,
+  filepath?: string | null,
+) {}
