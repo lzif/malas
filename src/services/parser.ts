@@ -15,7 +15,7 @@ export function parseText(input: string) {
   while ((match = regex.exec(input)) !== null) {
     const key = match[1].toLowerCase();
     const value = match[2].trim();
-    component[key] = value.replace(/```(.*?)\n/, "").replace("```", "");
+    component[key] = value;
   }
   return component;
 }
