@@ -1,3 +1,10 @@
+## [1.4.1](https://github.com/lzif/malas/compare/v1.4.0...v1.4.1) (2024-11-09)
+
+
+### Bug Fixes
+
+* **bikin:** sanitize code output before saving to file ([e456879](https://github.com/lzif/malas/commit/e456879118991656f928587d8312f4322fee6ecd))
+
 # [1.4.0](https://github.com/lzif/malas/compare/v1.3.0...v1.4.0) (2024-11-09)
 
 
