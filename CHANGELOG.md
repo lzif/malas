@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/lzif/malas/compare/v1.4.1...v1.5.0) (2024-11-09)
+
+
+### Features
+
+* **bikin:** improve code generation and saving experience ([b89a526](https://github.com/lzif/malas/commit/b89a526d95a1d4fae85f1087ae28bb152b1f7de5))
+
 ## [1.4.1](https://github.com/lzif/malas/compare/v1.4.0...v1.4.1) (2024-11-09)
 
 
