@@ -32,7 +32,7 @@ export function logCode(code: string, filepath?: string) {
   };
 
   // Split the code into lines
-  const codes = code.split('\n');
+  const codes = code.replace(/```(.*?)\n/g,"").replace(/```/g,"").split('\n');
   const contentWidth = getContentWidth();
 
   // Draw top border with optional filepath
