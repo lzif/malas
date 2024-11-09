@@ -39,9 +39,9 @@ export function logCode(code: string, filepath?: string) {
   if (filepath) {
     const path = ` File Path : ${filepath} `;
     const remainingWidth = getTerminalWidth() - 7 - path.length;
-    log(`╭───${chalk.blue(path)}${'─'.repeat(remainingWidth)}╮`);
+    console.log(`─────${chalk.cyan.bold(path)}${'─'.repeat(remainingWidth)}──`);
   } else {
-    log(`╭${'─'.repeat(contentWidth)}╮`);
+    console.log(`──${'─'.repeat(contentWidth)}──`);
   }
 
   // Process and output each line
@@ -50,18 +50,18 @@ export function logCode(code: string, filepath?: string) {
       // Handle long lines by wrapping them
       const wrappedLines = wrapText(codeLine, contentWidth);
       wrappedLines.forEach((line) => {
-        const padding = ' '.repeat(contentWidth - line.length-1);
-        log(`│ ${line}${padding}│ `);
+        const padding = ' '.repeat(contentWidth - line.length);
+        log(`  ${chalk.green(line)}${padding}`);
       });
     } else {
       // Handle normal lines
-      const padding = ' '.repeat(contentWidth - codeLine.length-1);
-      log(`│ ${codeLine}${padding}│ `);
+      const padding = ' '.repeat(contentWidth - codeLine.length);
+      log(`  ${chalk.green(codeLine)}${padding}`);
     }
   });
 
   // Draw bottom border
-  log(`╰${'─'.repeat(contentWidth)}╯`);
+  console.log(`──${'─'.repeat(contentWidth)}──`);
 }
 
 

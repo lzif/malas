@@ -38,7 +38,7 @@ export default async function generate(
     });
 
     const result = await chatSession.sendMessage(prompt);
-    spinner.succeed(" Berhasil membuat kode");
+    spinner.stop();
     return result.response.text();
   } catch (err) {
     spinner.fail(" Gagal membuat kode, maaf :(");

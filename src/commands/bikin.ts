@@ -32,19 +32,23 @@ const HISTORY = [
 
 export default async function bikin(prompt: string, config: Config) {
   try {
-    const AIResult = await generate(INSTRUCTION, prompt, config, HISTORY);
+    const AIResult = await generate(INSTRUCTION, prompt + "\nharus ada [FILEPATH] [KODE] [KETERANGAN]", config, HISTORY);
     const { filepath, kode, keterangan } = parseText(AIResult);
 
     if (filepath && kode) {
       logCode(kode, filepath);
 
       if (keterangan) {
-        log(chalk.blue("Deskripsi: ") + keterangan);
+        log(chalk.yellow.bold("Deskripsi: ") + keterangan);
       }
 
-      if (await yOrN(chalk.blue(" Simpan file?"))) {
+      let save = await yOrN(chalk.magenta.bold(" Simpan file?"))
+      if (save) {
         await writeFile(filepath, kode.replace(/```(.*?)\n/g, "").replace(/```/g, "")); //patch
       }
+      process.exit(1)
+    } else {
+      await bikin(prompt, config)
     }
   } catch (error) {
     if (error instanceof Error) {
