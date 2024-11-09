@@ -1,6 +1,5 @@
 // main.ts
 import { Command } from "commander";
-import { exit } from "process";
 import { getConfig } from "./config";
 import { version } from "../package.json";
 import bikin from "./commands/bikin";
@@ -61,16 +60,25 @@ async function main() {
     .version(version); 
 
   const config = await getConfig();
-  validCommands.forEach(({ name, description }) => {
-    program
-      .command(name)
-      .description(description)
-      .argument("[filepath]", "File yang dibutuhkan untuk beberapa command")
-      .argument("<prompt>", "Deskripsi atau prompt yang diperlukan")
-      .action(async (filepath, prompt) => {
-        await executeCommand(name, prompt, config, filepath);
-      });
+
+  program
+  .command('bikin')
+  .description('Membuat komponen atau kode baru sesuai deskripsi')
+  .argument('<prompt>', 'Deskripsi komponen atau kode yang akan dibuat')
+  .action(async (prompt) => {
+    await executeCommand('bikin', prompt, config);
   });
+  //validCommands.forEach(({ name, description }) => {
+  //  program
+  //    .command(name)
+  //    .description(description)
+  //    .argument("<prompt>", "Deskripsi atau prompt yang diperlukan")
+  //    .argument("[filepath]", "File yang dibutuhkan untuk beberapa command")
+  //    .action(async (filepath, prompt) => {
+  //      console.log(JSON.stringify({filepath,prompt},null,2))
+  //      await executeCommand(name, prompt, config, filepath);
+  //    });
+  //});
 
   program.showHelpAfterError(
     "Format command salah. Gunakan 'malas <command> [filepath] <prompt>' untuk menjalankan."
