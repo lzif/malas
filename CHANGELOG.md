@@ -1,3 +1,19 @@
+# [1.4.0](https://github.com/lzif/malas/compare/v1.3.0...v1.4.0) (2024-11-09)
+
+
+### Bug Fixes
+
+* **logger:** improve code formatting for logging ([11686f0](https://github.com/lzif/malas/commit/11686f03095c9c5e431b4d1dc4b8bd6b2c1ad662))
+* **parser:** remove unnecessary regex replacements in parseText function ([7260e7b](https://github.com/lzif/malas/commit/7260e7b125626d1563f82a3be80673491fd98e1e))
+
+
+### Features
+
+* **commands/bikin.ts:** memperbaiki tampilan pesan error dan loading ([9e74768](https://github.com/lzif/malas/commit/9e74768048cfdf41d7be434e61b5b02ca2304c17))
+* **commands/jelasin.ts:** menambahkan fitur penjelasan kode ([b8d8ff0](https://github.com/lzif/malas/commit/b8d8ff09d6c3d10503a0a572df94037b4baf3d6a))
+* **commands:** add new commands for bikin-docs, jelasin, rapiin, and test ([5eee89c](https://github.com/lzif/malas/commit/5eee89c01ed8aa054fd9a70e4f809a681c8e3417))
+* **index.ts:** Implement CLI with improved structure and validation ([57b9e46](https://github.com/lzif/malas/commit/57b9e46a64bae80d0bd093b1e8445cebfd76419a))
+
 # [1.3.0](https://github.com/lzif/malas/compare/v1.2.0...v1.3.0) (2024-11-09)
 
 
