@@ -2,13 +2,15 @@
 import { Command } from "commander";
 import { Config, getConfig } from "./config";
 import { version } from "../package.json";
-import bikin from "./commands/bikin";
-import rapiin from "./commands/rapiin";
-import jelasin from "./commands/jelasin";
-import test from "./commands/test";
-import { commands } from "./commands";
-import bikinDocs from "./commands/bikin-docs";
-import bikinProject from "./commands/bikin-project";
+import {
+  bikin,
+  rapiin,
+  jelasin,
+  test,
+  bikinDocs, 
+  bikinProject,
+  commands
+} from "./commands";
 import type { CommandArg, Command as Commands } from "./types";
 import { validateArgs } from "./utils/validateArgs";
 const program = new Command();

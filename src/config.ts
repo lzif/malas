@@ -45,7 +45,7 @@ export const getConfig = async (): Promise<Config> => {
     return config;
   } else {
     const configData = fs.readFileSync(configPath, "utf-8");
-    const result:Config = JSON.parse(configData);
-    return result
+    const result: Config = JSON.parse(configData);
+    return result;
   }
 };
