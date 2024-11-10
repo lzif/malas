@@ -13,7 +13,7 @@ export function buildMessage(
     ...history,
     {
       role: "user",
-      content: prompt + "\nharus ada [FILEPATH] [KODE] [KETERANGAN]",
+      content: prompt,
     },
   ];
   return message;
