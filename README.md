@@ -1,4 +1,5 @@
-# 💻 Malas CLI 🛠️ 
+# 💻 Malas CLI 🛠️
+
 ![npm](https://img.shields.io/npm/v/malas?style=flat-square) ![npm](https://img.shields.io/npm/dt/malas?color=success&style=flat-square) ![license](https://img.shields.io/github/license/lzif/malas?style=flat-square)
 
 **Malas** adalah tools CLI buat orang malas (atau yang pengen lebih efisien). Dibantu AI, lo bisa 🎉 generate kode, rapiin kode yang berantakan, dapetin penjelasan kode, bikin test, dan dokumentasi cuma dengan perintah pakai bahasa sehari-hari. Support berbagai bahasa pemrograman kayak Node.js, Svelte, Python, dan lain-lain, sesuai kebutuhan lo.
@@ -33,26 +34,31 @@ $ malas
 ### 🧩 Command yang Tersedia
 
 1. **`bikin`** 🎨: Generate kode baru sesuai deskripsi lo
+
    ```bash
    malas bikin "bikin fungsi untuk menghitung rata-rata array"
    ```
 
 2. **`rapiin`** ✨: Beresin dan improve kode yang berantakan
+
    ```bash
    malas rapiin ./src/components/Button.jsx
    ```
 
 3. **`jelasin`** 📖: Dapetin penjelasan detail tentang kode
+
    ```bash
    malas jelasin ./src/utils/helpers.ts
    ```
 
 4. **`test`** 🧪: Generate unit test untuk kode lo
+
    ```bash
    malas test ./src/lib/calculator.js "pakai vitest"
    ```
 
 5. **`bikin-project`** 🛠️: Generate struktur project baru
+
    ```bash
    malas bikin-project "todo list fullstack pakai express+react"
    ```
