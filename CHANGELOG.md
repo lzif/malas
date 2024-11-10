@@ -1,3 +1,24 @@
+# [1.6.0](https://github.com/lzif/malas/compare/v1.5.0...v1.6.0) (2024-11-10)
+
+
+### Bug Fixes
+
+* **index.ts:** add uncaught exception handler for better error handling ([70a9210](https://github.com/lzif/malas/commit/70a9210116459e6539250d9e3e59c5d7dc54531e))
+* **logger:** improve logger function and logCode function ([9429d06](https://github.com/lzif/malas/commit/9429d0687bac3243db92e8d730717ba8bf2b9e51))
+
+
+### Features
+
+* **commands/bikin.ts:** improve bikin command by using Message type and adding history for better AI interaction and code generation.  Also, added support for saving generated code to file. ([93de3e1](https://github.com/lzif/malas/commit/93de3e17e7fe3ea35249eb45a125bc7b62c66056))
+* **commands/jelasin:** improve prompt handling and AI interaction ([38e3f9d](https://github.com/lzif/malas/commit/38e3f9dcca0d2c85dafe9a567282263e7b167720))
+* **commands:** add bikin-project command ([168d95c](https://github.com/lzif/malas/commit/168d95cd16ef8b07a55bc267d0f49239d1c0181d))
+* **commands:** add new commands for code generation, improvement, explanation, testing, project creation, and documentation ([ebc6cba](https://github.com/lzif/malas/commit/ebc6cba81c4d465ab45357ae52846dfbf928a264))
+* **index.ts:** refactor command handling and add bikin-project command ([2db6261](https://github.com/lzif/malas/commit/2db62611bd23a18f2650eba540a245c5c7f7080d))
+* **services/ai.ts:** Implement AI service using external API ([0bdc3e6](https://github.com/lzif/malas/commit/0bdc3e67e2b38530b82cef5c86e9e1c2558df00c))
+* **types.ts:** add more types for commands, arguments, and messages for better type safety and maintainability.  Introduce new types for `Command`, `CommandArg`, `Message`, and `ChatOptions` to improve code clarity and organization.  Also, added `ChatResponse` to handle potential errors during API calls. ([94f6ecc](https://github.com/lzif/malas/commit/94f6ecc5b60e7406061fa9a5c84ad9c0e7589088))
+* **utils:** add buildMessage function to prepare messages for the LLM ([79a922b](https://github.com/lzif/malas/commit/79a922b368d35d12a99106f1f63673313634f1d4))
+* **utils:** add validateArgs function for command line arguments ([876befd](https://github.com/lzif/malas/commit/876befd59def0baff81745aa2c4b89ce528c0232))
+
 # [1.5.0](https://github.com/lzif/malas/compare/v1.4.1...v1.5.0) (2024-11-09)
 
 ### Features
