@@ -6,8 +6,11 @@ import bikin from "./commands/bikin";
 import rapiin from "./commands/rapiin";
 import jelasin from "./commands/jelasin";
 import test from "./commands/test";
+import { commands } from "./commands";
 import bikinDocs from "./commands/bikin-docs";
-import { validateFilePath } from "./services/file";
+import bikinProject from "./commands/bikin-project";
+import type { CommandArg, Command as Commands } from "./types";
+import { validateArgs } from "./utils/validateArgs";
 const program = new Command();
 
 async function executeCommand(
@@ -29,6 +32,8 @@ async function executeCommand(
     case "test":
       await test(prompt, config, filepath);
       break;
+    case "bikin-project":
+      await bikinProject(prompt, config, filepath);
     case "bikin-docs":
       await bikinDocs(prompt, config, filepath);
       break;
@@ -39,73 +44,44 @@ async function executeCommand(
 }
 
 async function main() {
-  process.on('uncaughtException', (err) => {
-  console.error(`Error: ${err.message}`);
-  process.exit(1);
-});
+  process.on("uncaughtException", (err) => {
+    console.error(`Error: ${err.message}`);
+    process.exit(1);
+  });
 
   try {
+    const config = await getConfig();
+
     program
       .name("malas")
       .description("AI CLI untuk berbagai utilitas coding.")
       .version(version);
 
-    const config = await getConfig();
+    // BREAKING CHANGE
+    // Register semua command
+    commands.forEach((cmd: Commands) => {
+      let command = program
+        .command(cmd.name)
+        .description(`${cmd.emoji} ${cmd.description}`);
 
-    program
-      .command("bikin")
-      .description("Membuat komponen atau kode baru sesuai deskripsi")
-      .argument("<prompt>", "Deskripsi komponen atau kode yang akan dibuat")
-      .action(async (prompt) => {
-        await executeCommand("bikin", prompt, config);
+      // Tambah arguments sesuai definisi
+      cmd.args.forEach((arg: CommandArg) => {
+        const argString = arg.optional ? `[${arg.name}]` : `<${arg.name}>`;
+        command = command.argument(argString, arg.description);
       });
 
-    program
-      .command("rapiin")
-      .description("Membersihkan dan merapikan kode yang ada")
-      .argument("<prompt>", "Instruksi bagaimana code harus dirapikan")
-      .argument("<filepath>", "Path ke file yang akan dirapikan")
-      .action(async (prompt, filepath) => {
-        const validatedPath = await validateFilePath(filepath);
-        await executeCommand("rapiin", prompt, config, validatedPath);
+      // Handle action untuk tiap command
+      command.action(async (...args: any[]) => {
+        // Hapus argument terakhir (object Commander)
+        args.pop();
+        args.pop();
+
+        const validatedArgs = await validateArgs(cmd.args, args);
+        const prompt = validatedArgs.prompt;
+        const filepath = validatedArgs.filepath;
+        await executeCommand(cmd.name, prompt, config, filepath);
       });
-
-    program
-      .command("jelasin")
-      .description("Memberikan penjelasan singkat mengenai kode atau fungsi")
-      .argument("<prompt>", "Bagian kode yang perlu dijelaskan")
-      .argument("<filepath>", "Path ke file yang akan dijelaskan")
-      .action(async (prompt, filepath) => {
-        const validatedPath = await validateFilePath(filepath);
-        await executeCommand("jelasin", prompt, config, validatedPath);
-      });
-
-    program
-      .command("test")
-      .description("Membuat unit test untuk kode atau fungsi tertentu")
-      .argument("<prompt>", "Deskripsi test yang akan dibuat")
-      .argument("<filepath>", "Path ke file yang akan ditest")
-      .action(async (prompt, filepath) => {
-        const validatedPath = await validateFilePath(filepath);
-        await executeCommand("test", prompt, config, validatedPath);
-      });
-
-    program
-      .command("bikin-docs")
-      .description(
-        "Membuat dokumentasi untuk fungsi atau modul yang disebutkan",
-      )
-      .argument("<prompt>", "Deskripsi dokumentasi yang akan dibuat")
-      .argument("<filepath>", "Path ke file yang akan didokumentasikan")
-      .action(async (prompt, filepath) => {
-        const validatedPath = await validateFilePath(filepath);
-        await executeCommand("bikin-docs", prompt, config, validatedPath);
-      });
-
-    program.showHelpAfterError(
-      "Format command salah. Gunakan 'malas <command> <prompt> [filepath]' untuk menjalankan.",
-    );
-
+    });
     program.parse(process.argv);
 
     if (!process.argv.slice(2).length) {
