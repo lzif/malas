@@ -24,7 +24,7 @@ async function executeCommand(
       await bikin(prompt, config);
       break;
     case "rapiin":
-      await rapiin(prompt, config, filepath);
+      await rapiin(prompt, config, filepath!);
       break;
     case "jelasin":
       await jelasin(prompt, config, filepath);
@@ -45,7 +45,7 @@ async function executeCommand(
 
 async function main() {
   process.on("uncaughtException", (err) => {
-    console.error(`Error: ${err.message}`);
+    console.error(`Error => ${err.message}`);
     process.exit(1);
   });
 
@@ -79,7 +79,7 @@ async function main() {
         const validatedArgs = await validateArgs(cmd.args, args);
         const prompt = validatedArgs.prompt;
         const filepath = validatedArgs.filepath;
-        await executeCommand(cmd.name, prompt, config, filepath);
+        await executeCommand(cmd.name, prompt!, config, filepath);
       });
     });
     program.parse(process.argv);
