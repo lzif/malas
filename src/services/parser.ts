@@ -1,11 +1,11 @@
 /**
-  * Parses text with markdown-style key-value pairs in the format:
-  *
-  * [key]: value
-  *
-  * @param input The text to parse
-  * @returns A dictionary with the parsed keys and values
-*/
+ * Parses text with markdown-style key-value pairs in the format:
+ *
+ * [key]: value
+ *
+ * @param input The text to parse
+ * @returns A dictionary with the parsed keys and values
+ */
 export function parseText(input: string) {
   const component: Record<string, string> = {};
   const regex = /\[([^\]]+)\]:\s*(.*?)(?=\n\[[^\]]+\]:|$)/gs;

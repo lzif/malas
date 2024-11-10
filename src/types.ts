@@ -33,6 +33,7 @@ export interface ChatOptions {
   temperature?: number;
   top_p?: number;
   top_k?: number;
+  max_tokens?: number;
 }
 
 export interface ChatResponse {

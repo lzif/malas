@@ -1,12 +1,13 @@
 import ora from "ora";
 import { ChatOptions, ChatResponse, Message } from "../types";
 
-const API_URL = "https://typli.ai/api/generators/completion";
+const API_URL = "https://api.deepenglish.com/api/gpt_open_ai/chatnew";
 
 const DEFAULT_OPTIONS: ChatOptions = {
-  temperature: 0.8,
-  top_p: 0.9,
+  temperature: 0.3,
+  top_p: 0.7,
   top_k: 40,
+  max_tokens: 1080,
 };
 
 /**
@@ -35,6 +36,7 @@ async function generate(
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: "Bearer UFkOfJaclj61OxoD7MnQknU1S2XwNdXMuSZA+EZGLkc=",
       },
       body: JSON.stringify(requestBody),
     });
@@ -43,11 +45,11 @@ async function generate(
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    const data = await response.text();
+    const data = await response.json();
     spinner.stop();
     return {
       success: true,
-      answer: data,
+      answer: data.message,
     };
   } catch (error) {
     let errorMsg =

@@ -34,7 +34,7 @@ export default async function jelasin(
 kode:
 ${kode}
 `;
-      const message = buildMessage(improvedPrompt, INSTRUCTION, HISTORY);
+      const message = buildMessage(improvedPrompt, INSTRUCTION, []);
       const AIResult = await generate(message);
       const { deskripsi, cara_pakai } = parseText(AIResult.answer);
       if (!deskripsi || !cara_pakai) {

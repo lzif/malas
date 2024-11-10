@@ -49,7 +49,7 @@ export const validateFilePath = async (filepath: string): Promise<string> => {
   try {
     const stats = await fs.stat(filepath);
     if (!stats.isFile()) {
-      throw new Error('Path yang diberikan bukan file');
+      throw new Error("Path yang diberikan bukan file");
     }
     return path.resolve(filepath);
   } catch (error) {
