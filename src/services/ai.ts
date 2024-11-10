@@ -1,52 +1,63 @@
-import {
-  Content,
-  DynamicRetrievalMode,
-  GoogleGenerativeAI,
-  Part,
-} from "@google/generative-ai";
-import type { Config } from "../config";
 import ora from "ora";
+import { ChatOptions, ChatResponse, Message } from "../types";
 
-function getGenerativeModelConfig(instruction: string | Part | Content) {
-  return {
-    model: "gemini-1.5-flash-8b",
-    systemInstruction: instruction,
-  };
-}
+const API_URL = "https://typli.ai/api/generators/completion";
 
-export default async function generate(
-  instruction: string | Part | Content,
-  prompt: string,
-  config: Config,
-  history?: Content[],
-): Promise<string> {
+const DEFAULT_OPTIONS: ChatOptions = {
+  temperature: 0.8,
+  top_p: 0.9,
+  top_k: 40,
+};
+
+/**
+ * Send a message to AI API
+ * @param messages - Array of message objects containing the conversation
+ * @param options - Optional settings for the API request
+ * @returns Promise with the API response
+ */
+async function generate(
+  messages: Message[],
+  options: ChatOptions = DEFAULT_OPTIONS,
+): Promise<ChatResponse> {
   const spinner = ora({
     text: "Bentar, mikir dulu...",
     spinner: "bouncingBar",
     color: "green",
   }).start();
-
   try {
-    const genAI = new GoogleGenerativeAI(config.apiKey);
-    const model = genAI.getGenerativeModel(
-      getGenerativeModelConfig(instruction),
-    );
+    const requestBody = {
+      messages,
+      ...DEFAULT_OPTIONS,
+      ...options,
+    };
 
-    const chatSession = model.startChat({
-      generationConfig: config.generationConfig,
-      history,
+    const response = await fetch(API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestBody),
     });
 
-    const result = await chatSession.sendMessage(prompt);
-    spinner.stop();
-    return result.response.text();
-  } catch (err) {
-    spinner.fail(" Gagal membuat kode, maaf :(");
-    if (err instanceof Error) {
-      console.error(err);
-      throw new Error("Error cik: \n" + err.message);
-    } else {
-      throw new Error(" AI nya error jir, mungkin lagi malas mikir");
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
+
+    const data = await response.text();
+    spinner.stop();
+    return {
+      success: true,
+      answer: data,
+    };
+  } catch (error) {
+    let errorMsg =
+      error instanceof Error ? error.message : "An unknown error occurred";
+    spinner.fail(errorMsg);
+    return {
+      success: false,
+      error: errorMsg,
+    };
   }
 }
+
+export default generate;
