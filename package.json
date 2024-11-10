@@ -1,6 +1,6 @@
 {
   "name": "malas",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "description": "AI-powered CLI assistant that runs commands and writes files based on user prompts.",
   "publishConfig": {
     "access": "public"

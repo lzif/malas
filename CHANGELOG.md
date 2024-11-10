@@ -1,3 +1,16 @@
+# [1.7.0](https://github.com/lzif/malas/compare/v1.6.0...v1.7.0) (2024-11-10)
+
+
+### Bug Fixes
+
+* **index.ts:** fix potential null pointer dereference error in rapiin command ([55af54e](https://github.com/lzif/malas/commit/55af54e5cd888b533ac0109a680857e1079cf00c))
+
+
+### Features
+
+* **commands:** add refactor command, improve code formatting, and add support for git diff ([36d2542](https://github.com/lzif/malas/commit/36d25421ced4cf0b10ef24797d9af4d433d5a81b))
+* **config:** improve config loading to handle JSON files ([c53b0e4](https://github.com/lzif/malas/commit/c53b0e4cbcde8675938ed11b4dd019fa7f90407f))
+
 # [1.6.0](https://github.com/lzif/malas/compare/v1.5.0...v1.6.0) (2024-11-10)
 
 
