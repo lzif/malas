@@ -19,7 +19,7 @@ export const writeFile = async (
       log(` Directory "${dir}" berhasil dibuat.`, "green");
     }
 
-    await fs.writeFile(fileName, content);
+    await fs.writeFile(fileName, content.replace(/```(.*?)\n/g, "").replace(/```/g, ""));
     log(` File "${fileName}" berhasil disimpan.`, "green");
   } catch (err) {
     log(`Error menyimpan file: ${err}`, "red");
