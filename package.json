@@ -8,7 +8,8 @@
   },
   "main": "dist/index.js",
   "files": [
-    "dist"
+    "dist",
+		"gen"
   ],
   "repository": {
     "type": "git",
@@ -21,21 +22,27 @@
   },
   "scripts": {
     "dev": "tsx src/index.ts",
-    "build": "tsup src/index.ts --format esm --clean",
+    "build": "tsup",
     "test": "vitest run",
-    "prepublishOnly": "pnpm run build"
+    "prepublishOnly": "pnpm run build",
+		"new:gen": "tsx scripts/new-gen.ts"
   },
   "dependencies": {
+    "@inquirer/prompts": "^8.1.0",
     "commander": "^12.1.0",
-    "chalk": "^5.3.0"
+    "diff": "^8.0.2",
+    "fast-glob": "^3.3.3",
+    "mustache": "^4.2.0",
+    "picocolors": "^1.1.1",
+    "zod": "^4.1.13"
   },
   "devDependencies": {
+    "@semantic-release/commit-analyzer": "^11.0.0",
+    "@semantic-release/github": "^11.0.0",
+    "@semantic-release/npm": "^12.0.1",
+    "@semantic-release/release-notes-generator": "^12.0.0",
     "@types/node": "^22.7.4",
     "semantic-release": "^24.2.0",
-    "@semantic-release/commit-analyzer": "^11.0.0",
-    "@semantic-release/release-notes-generator": "^12.0.0",
-    "@semantic-release/npm": "^12.0.1",
-    "@semantic-release/github": "^11.0.0",
     "tsup": "^8.0.1",
     "tsx": "^4.19.2",
     "typescript": "^5.5.4",

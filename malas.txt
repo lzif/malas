@@ -1,0 +1,418 @@
+// ============================================
+// src/core/loader.ts (FIXED)
+// ============================================
+import fg from 'fast-glob';
+import path from 'node:path';
+import { pathToFileURL, fileURLToPath } from 'node:url';
+import type { Generator } from '../types/index.js';
+
+export async function loadGenerators() {
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
+
+  // Determine if we're running from compiled output
+  // In dev: src/core/loader.ts → genDir: src/gen
+  // In prod: dist/core/loader.js → genDir: dist/gen
+  const isCompiled = __filename.endsWith('.js') && __dirname.includes('/dist/');
+  
+  const genDir = isCompiled 
+    ? path.join(__dirname, '../gen')
+    : path.join(__dirname, '../gen');
+
+  const pattern = isCompiled ? '**/*.js' : '**/*.ts';
+
+  const entries = await fg(pattern, {
+    cwd: genDir,
+    ignore: ['**/*.d.ts', '**/templates/**']
+  });
+
+  const commands = new Map<string[], Generator>();
+
+  for (const file of entries) {
+    const parts = file.replace(/\.(j|t)s$/, '').split(path.sep);
+
+    try {
+      const mod = await import(
+        pathToFileURL(path.join(genDir, file)).href
+      ) as { default: Generator };
+
+      commands.set(parts, mod.default);
+    } catch (err) {
+      console.error(`Failed to load generator: ${file}`, err);
+    }
+  }
+
+  return commands;
+}
+
+// ============================================
+// src/index.ts (FIXED - Command Structure)
+// ============================================
+#!/usr/bin/env node
+import { Command } from 'commander';
+import { loadGenerators } from './core/loader.js';
+import { configCommand } from './commands/config.js';
+
+const program = new Command();
+
+program
+  .name('malas')
+  .description('Deterministic CLI generator for repetitive dev workflows')
+  .version('2.0.0');
+
+// Load and register generators dynamically
+const generators = await loadGenerators();
+
+// Build command tree properly
+const genCommand = program.command('gen').description('Generate from templates');
+
+// Group by category
+const grouped = new Map<string, Array<{ parts: string[], gen: any }>>();
+for (const [parts, gen] of generators) {
+  const category = parts[0];
+  if (!grouped.has(category)) {
+    grouped.set(category, []);
+  }
+  grouped.get(category)!.push({ parts, gen });
+}
+
+// Register commands: malas gen <category> <type> [args...]
+for (const [category, items] of grouped) {
+  for (const { parts, gen } of items) {
+    // parts = ['svelte', 'route'] → command: gen svelte route
+    const commandPath = parts.join(' ');
+    
+    genCommand
+      .command(commandPath)
+      .description(gen.meta?.description ?? '')
+      .allowExcessArguments(true)
+      .allowUnknownOption(true)
+      .action(async (...commandArgs) => {
+        // Last arg is the Command object, rest are args
+        const args = commandArgs.slice(0, -1);
+        await gen.run(args);
+      });
+  }
+}
+
+// Static commands
+program.addCommand(configCommand);
+
+// List command
+program
+  .command('list')
+  .description('List all available generators')
+  .action(() => {
+    const categoryMap = new Map<string, string[]>();
+
+    for (const [parts] of generators) {
+      const category = parts[0];
+      const type = parts.slice(1).join('/');
+      
+      if (!categoryMap.has(category)) {
+        categoryMap.set(category, []);
+      }
+      categoryMap.get(category)!.push(type);
+    }
+
+    console.log('\n📦 Available Generators\n');
+    for (const [category, types] of categoryMap) {
+      console.log(`${category}:`);
+      types.forEach(type => console.log(`  ● ${type}`));
+      console.log();
+    }
+  });
+
+program.parse();
+
+// ============================================
+// tsup.config.ts (FIXED - Cross-platform)
+// ============================================
+import { defineConfig } from 'tsup';
+import { copyFile, mkdir, readdir } from 'fs/promises';
+import { join, dirname } from 'path';
+import { existsSync } from 'fs';
+
+async function copyTemplates() {
+  const srcGen = 'src/gen';
+  const distGen = 'dist/gen';
+
+  async function copyDir(src: string, dest: string) {
+    if (!existsSync(src)) return;
+    
+    await mkdir(dest, { recursive: true });
+    const entries = await readdir(src, { withFileTypes: true });
+
+    for (const entry of entries) {
+      const srcPath = join(src, entry.name);
+      const destPath = join(dest, entry.name);
+
+      if (entry.isDirectory()) {
+        await copyDir(srcPath, destPath);
+      } else if (entry.name.endsWith('.mustache')) {
+        await mkdir(dirname(destPath), { recursive: true });
+        await copyFile(srcPath, destPath);
+      }
+    }
+  }
+
+  await copyDir(srcGen, distGen);
+  console.log('✓ Templates copied');
+}
+
+export default defineConfig({
+  entry: ['src/index.ts', 'src/gen/**/*.ts'],
+  format: ['esm'],
+  clean: true,
+  splitting: false,
+  dts: false,
+  outDir: 'dist',
+  outExtension: () => ({ js: '.js' }),
+  async onSuccess() {
+    await copyTemplates();
+  },
+});
+
+// ============================================
+// src/gen/svelte/route.ts (FIXED - import.meta.dirname)
+// ============================================
+import { input } from '@inquirer/prompts';
+import { renderTemplates, createContext } from '../../core/template.js';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
+import type { Generator } from '../../types/index.js';
+
+export default {
+  meta: {
+    description: 'SvelteKit route with server load'
+  },
+
+  async run(args) {
+    const name = args[0] || await input({
+      message: 'Route name:',
+      validate: v => v.length > 0 || 'Name required'
+    });
+
+    const __dirname = dirname(fileURLToPath(import.meta.url));
+    const context = createContext(name);
+    const templateDir = join(__dirname, 'templates/route');
+    const outputDir = join(process.cwd(), 'src/routes', name);
+
+    await renderTemplates(templateDir, outputDir, context);
+  }
+} satisfies Generator;
+
+// ============================================
+// src/gen/svelte/component.ts (FIXED)
+// ============================================
+import { input, confirm } from '@inquirer/prompts';
+import { renderTemplates, createContext } from '../../core/template.js';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
+import type { Generator } from '../../types/index.js';
+
+export default {
+  meta: {
+    description: 'Svelte component with TypeScript'
+  },
+
+  async run(args) {
+    const name = args[0] || await input({
+      message: 'Component name:',
+      validate: v => v.length > 0 || 'Name required'
+    });
+
+    const props = await confirm({
+      message: 'Add props?',
+      default: false
+    });
+
+    const __dirname = dirname(fileURLToPath(import.meta.url));
+    const context = createContext(name, { props });
+    const templateDir = join(__dirname, 'templates/component');
+    const outputDir = join(process.cwd(), 'src/lib/components');
+
+    await renderTemplates(templateDir, outputDir, context);
+  }
+} satisfies Generator;
+
+// ============================================
+// src/gen/nvim/plugin.ts (FIXED)
+// ============================================
+import { input } from '@inquirer/prompts';
+import { renderTemplates, createContext } from '../../core/template.js';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
+import { homedir } from 'os';
+import type { Generator } from '../../types/index.js';
+
+export default {
+  meta: {
+    description: 'Neovim plugin configuration'
+  },
+
+  async run(args) {
+    const name = args[0] || await input({
+      message: 'Plugin name:',
+      validate: v => v.length > 0 || 'Name required'
+    });
+
+    const configPath = await input({
+      message: 'Neovim config path:',
+      default: join(homedir(), '.config/nvim')
+    });
+
+    const __dirname = dirname(fileURLToPath(import.meta.url));
+    const context = createContext(name);
+    const templateDir = join(__dirname, 'templates/plugin');
+    const outputDir = join(configPath, 'lua/plugins');
+
+    await renderTemplates(templateDir, outputDir, context);
+  }
+} satisfies Generator;
+
+// ============================================
+// src/gen/fish/function.ts (FIXED)
+// ============================================
+import { input } from '@inquirer/prompts';
+import { renderTemplates, createContext } from '../../core/template.js';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
+import { homedir } from 'os';
+import type { Generator } from '../../types/index.js';
+
+export default {
+  meta: {
+    description: 'Fish shell function'
+  },
+
+  async run(args) {
+    const name = args[0] || await input({
+      message: 'Function name:',
+      validate: v => v.length > 0 || 'Name required'
+    });
+
+    const configPath = await input({
+      message: 'Fish config path:',
+      default: join(homedir(), '.config/fish')
+    });
+
+    const __dirname = dirname(fileURLToPath(import.meta.url));
+    const context = createContext(name);
+    const templateDir = join(__dirname, 'templates/function');
+    const outputDir = join(configPath, 'functions');
+
+    await renderTemplates(templateDir, outputDir, context);
+  }
+} satisfies Generator;
+
+// ============================================
+// src/gen/fish/dotfile.ts (FIXED)
+// ============================================
+import { input } from '@inquirer/prompts';
+import { renderTemplates, createContext } from '../../core/template.js';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
+import { homedir } from 'os';
+import type { Generator } from '../../types/index.js';
+
+export default {
+  meta: {
+    description: 'Fish shell config starter'
+  },
+
+  async run() {
+    const configPath = await input({
+      message: 'Fish config path:',
+      default: join(homedir(), '.config/fish')
+    });
+
+    const __dirname = dirname(fileURLToPath(import.meta.url));
+    const context = createContext('config');
+    const templateDir = join(__dirname, 'templates/dotfile');
+    const outputDir = configPath;
+
+    await renderTemplates(templateDir, outputDir, context);
+  }
+} satisfies Generator;
+
+// ============================================
+// scripts/new-gen.ts (FIXED - import.meta.dirname)
+// ============================================
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import pc from 'picocolors';
+
+const [, , domain, name] = process.argv;
+
+if (!domain || !name) {
+  console.error(pc.red('Usage: pnpm new:gen <domain> <name>'));
+  console.error(pc.dim('Example: pnpm new:gen hono route'));
+  process.exit(1);
+}
+
+const baseDir = path.join('src/gen', domain);
+const filePath = path.join(baseDir, `${name}.ts`);
+const templateDir = path.join(baseDir, 'templates', name);
+
+try {
+  await fs.access(filePath);
+  console.error(pc.red(`Error: Generator already exists at ${filePath}`));
+  process.exit(1);
+} catch {
+  // File doesn't exist, continue
+}
+
+await fs.mkdir(baseDir, { recursive: true });
+await fs.mkdir(templateDir, { recursive: true });
+
+const generatorTemplate = `import { input } from '@inquirer/prompts';
+import { renderTemplates, createContext } from '../../core/template.js';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
+import type { Generator } from '../../types/index.js';
+
+export default {
+  meta: {
+    description: 'Generate ${domain} ${name}',
+  },
+  async run(args) {
+    const value = args[0] || await input({
+      message: 'Name:',
+      validate: v => v.length > 0 || 'Name required'
+    });
+
+    const __dirname = dirname(fileURLToPath(import.meta.url));
+    const context = createContext(value);
+    const templateDir = join(__dirname, 'templates/${name}');
+    const outputDir = join(process.cwd(), 'output/path'); // TODO: Change this
+
+    await renderTemplates(templateDir, outputDir, context);
+  },
+} satisfies Generator;
+`;
+
+const templateFile = path.join(templateDir, 'template.mustache');
+const templateContent = `{{!-- ${domain}/${name} template --}}
+# Template for {{name}}
+
+TODO: Add your template content here.
+
+Available variables:
+- {{name}} - lowercase name
+- {{Name}} - capitalized name
+- {{NAME}} - uppercase name
+- {{name_snake}} - snake_case
+- {{name-kebab}} - kebab-case
+`;
+
+await fs.writeFile(filePath, generatorTemplate, 'utf8');
+await fs.writeFile(templateFile, templateContent, 'utf8');
+
+console.log(pc.green('\n✔ Generator created!\n'));
+console.log(`  ${pc.cyan('Generator:')} ${filePath}`);
+console.log(`  ${pc.cyan('Templates:')} ${templateDir}/\n`);
+console.log(pc.dim('Next steps:'));
+console.log(pc.dim('  1. Edit generator logic in ' + filePath));
+console.log(pc.dim('  2. Add templates in ' + templateDir + '/'));
+console.log(pc.dim('  3. Test with: malas gen ' + domain + ' ' + name + ' <value>\n'));
