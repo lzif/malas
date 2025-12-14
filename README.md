@@ -1,102 +1,130 @@
-# 💻 Malas CLI 🛠️
+# malas
 
-![npm](https://img.shields.io/npm/v/malas?style=flat-square) ![npm](https://img.shields.io/npm/dt/malas?color=success&style=flat-square) ![license](https://img.shields.io/github/license/lzif/malas?style=flat-square)
+CLI buat developer **malas** yang tetap pengen rapi.
 
-**Malas** adalah tools CLI buat orang malas (atau yang pengen lebih efisien). Dibantu AI, lo bisa 🎉 generate kode, rapiin kode yang berantakan, dapetin penjelasan kode, bikin test, dan dokumentasi cuma dengan perintah pakai bahasa sehari-hari. Support berbagai bahasa pemrograman kayak Node.js, Svelte, Python, dan lain-lain, sesuai kebutuhan lo.
+`malas` membantu kamu menghilangkan kerja berulang di workflow dev:
+generate file, folder, dan struktur yang itu-itu lagi,
+dengan hasil **konsisten, deterministic, dan bisa dipreview**.
 
-## 🔥 Fitur
+Bukan AI.  
+Bukan framework.  
+Bukan tool serba bisa.
 
-- 🤖 **Bantuan AI**: Bikin kode, rapiin kode, dapetin penjelasan, test, dan dokumentasi pakai bahasa natural
-- 🌐 **Multi-Language Support**: Support banyak bahasa pemrograman (Node.js, Python, Svelte, dll.)
-- ⚙️ **Konfigurasi Otomatis**: Kalau config-nya belum ada, Malas bakal bikin otomatis di `~/.malas-bikin-config.json`
-- 📂 **Generate Project**: Bikin project baru dengan struktur yang udah diatur
-- 📜 **Dokumentasi Otomatis**: Generate dokumentasi untuk kode atau project lo
+Cuma generator kecil yang bikin kamu lanjut kerja lebih cepat.
 
-## ⚡ Instalasi
+---
 
-```bash
-npm install -g malas
-```
+## Kenapa `malas`?
 
-## 🚀 Cara Pakai
+Karena ini kejadian terus:
 
-### ⚙️ Setup Awal
+- bikin route Svelte → copy folder → rename → cek ulang
+- bikin component → boilerplate sama lagi
+- setup plugin Neovim → struktur sama, beda nama
+- dotfiles berantakan karena path config beda-beda
 
-Pas pertama kali jalanin **Malas**, lo bakal diminta masukin [**Gemini API key**](https://aistudio.google.com/app/apikey) buat konfigurasi awal. Kalau file config belum ada, Malas bakal otomatis bikin.
+Semua bisa manual.  
+Semua juga **malesin**.
 
-```bash
-$ malas
-# Halo orang malas!? 😴
-# Config filenya gk ada njirr. Gw bakal nyimpen confignya disini > ~/.malas-bikin-config.json
-# Beri gw Gemini API Key > apikey:********************************************************
-```
+`malas` menghapus ritual itu.
 
-### 🧩 Command yang Tersedia
+---
 
-1. **`bikin`** 🎨: Generate kode baru sesuai deskripsi lo
+## Fitur Utama
 
-   ```bash
-   malas bikin "bikin fungsi untuk menghitung rata-rata array"
-   ```
+### Generator (`malas gen`)
 
-2. **`rapiin`** ✨: Beresin dan improve kode yang berantakan
-
-   ```bash
-   malas rapiin ./src/components/Button.jsx
-   ```
-
-3. **`jelasin`** 📖: Dapetin penjelasan detail tentang kode
-
-   ```bash
-   malas jelasin ./src/utils/helpers.ts
-   ```
-
-4. **`test`** 🧪: Generate unit test untuk kode lo
-
-   ```bash
-   malas test ./src/lib/calculator.js "pakai vitest"
-   ```
-
-5. **`bikin-project`** 🛠️: Generate struktur project baru
-
-   ```bash
-   malas bikin-project "todo list fullstack pakai express+react"
-   ```
-
-6. **`bikin-docs`** 📄: Generate dokumentasi untuk kode atau project
-   ```bash
-   malas bikin-docs ./src/services/api.ts "pakai markdown"
-   ```
-
-### 🛠️ Konfigurasi
-
-File konfigurasi Malas ada di `~/.malas-bikin-config.json`. Isinya kayak gini:
-
-```json
-{
-  "apiKey": "your-gemini-api-key-here"
-}
-```
-
-### 🛠️ Development
-
-Buat yang mau ngoding:
+Generate hal-hal yang sering kamu ulang.
 
 ```bash
-# Install dependencies
-npm install
+malas gen svelte route blog
+malas gen svelte component Button
+malas gen nvim plugin my-plugin
+malas gen dotfile zsh
+````
 
-# Build project
-npm run build
+Karakteristik:
 
-# Jalanin test
-npm run test
+* output deterministic (input sama → hasil sama)
+* preview diff sebelum nulis file
+* aman dan idempotent
+* tanpa magic, tanpa guessing
+
+---
+
+### Backup Dotfiles (Bonus)
+
+Bukan backup system universal.
+Cuma helper biar kamu **nggak mikir path satu-satu**.
+
+```bash
+malas backup
 ```
 
-## 🤝 Kontribusi
+Yang dilakukan:
 
-Mau bantuin nambah fitur atau nemu bug? Silakan buka issue atau kirim pull request. Semua kontribusi diterima! 🙌
+* detect dotfiles umum (`~/.config/*`, `~/.zshrc`, dll)
+* checklist interaktif
+* preview file
+* archive atau `git commit`
 
-## 📜 Lisensi
+Pengganti:
 
-Project ini dilisensi di bawah MIT License. Lihat file [LICENSE](LICENSE) buat info lebih lengkap.
+```
+git add ~/.config/nvim ~/.zshrc ~/.gitconfig ...
+```
+
+Lebih pendek. Lebih manusiawi.
+
+---
+
+## Prinsip Desain
+
+* Offline-first
+* Deterministic
+* Preview sebelum apply
+* Aman, bisa dijalankan ulang
+* Opinionated (biar nggak ribet)
+
+Kalau belum kamu pakai sendiri tiap hari, fitur itu belum layak ada.
+
+---
+
+## Yang Tidak Dilakukan `malas`
+
+`malas` **tidak**:
+
+* menggunakan AI
+* mengirim data ke cloud
+* menjadi backup system lengkap
+* mengatur task atau hidup kamu
+* menggantikan editor atau shell
+
+---
+
+## Cocok Dipakai Kalau
+
+* kamu sering scaffold hal yang sama
+* kamu peduli struktur tapi nggak mau ribet
+* kamu suka tool kecil yang fokus
+* kamu lebih pilih konsistensi daripada fleksibilitas berlebihan
+
+Kalau kamu cari tool “bisa semuanya”, ini bukan itu.
+
+---
+
+## Status
+
+Masih berkembang.
+Scope dijaga ketat.
+Fitur bertambah hanya kalau dipakai beneran.
+
+---
+
+## Filosofi Singkat
+
+> Lebih baik tool kecil yang kepake tiap hari
+> daripada tool gede yang cuma dibaca README-nya.
+
+Kalau sesuatu bisa dilakukan manual tapi bikin kamu malas,
+itu kandidat fitur `malas`.
